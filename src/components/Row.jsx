@@ -9,16 +9,21 @@ function Row(props) {
       <th scope="row" className="">
         {index + 1}
       </th>
-      <td className="text-left">{title}</td>
+      <td
+        className="text-left font-weight-bold"
+        style={{ fontSize: "1.125rem" }}
+      >
+        {title}
+      </td>
       <td className="text-left">{name}</td>
       <td
         className="badge badge-primary text-nowrap font-weight-bold"
-        style={{ fontSize: "1.125rem" }}
+        style={{ fontSize: "1.125rem", fontWeight: "bold" }}
       >
         {stock}
       </td>
       <td className=" font-weight-bold" style={{ fontSize: "1.125rem" }}>
-        {rate}
+        ${rate + 9.49}
       </td>
       <td>
         <button
