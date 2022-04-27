@@ -29,6 +29,9 @@ function Table(props) {
             Rate
           </th>
           <th scope="col" className="#">
+            Like
+          </th>
+          <th scope="col" className="#">
             Action
           </th>
         </tr>

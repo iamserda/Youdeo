@@ -26,6 +26,9 @@ function Row(props) {
         ${rate + 9.49}
       </td>
       <td>
+        <span onClick={()=>{}}></span>
+      </td>
+      <td>
         <button
           className="btn btn-md btn-danger font-weight-bold"
           onClick={() => {
