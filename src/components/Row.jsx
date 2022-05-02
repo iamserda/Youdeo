@@ -1,6 +1,7 @@
 import React from "react";
 
 function Row(props) {
+  // console.log(props);
   const { movie, deleteFunc, index } = props;
   const { title, genre, numberInStock: stock, dailyRentalRate: rate } = movie;
   const { name } = genre;
@@ -26,8 +27,14 @@ function Row(props) {
         ${rate + 9.49}
       </td>
       <td>
-        <span onClick={(e) =>{
-        }}>🤍</span>
+        <span
+          style={{ fontSize: "1.5rem" }}
+          onClick={() => {
+            props.updateLike(movie._id);
+          }}
+        >
+          {props.movie.like ? "❤️" : "🤍"}
+        </span>
       </td>
       <td>
         <button

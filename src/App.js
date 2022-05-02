@@ -10,13 +10,25 @@ export default class App extends Component {
     this.state = {
       movies: MovieService.getMovies(),
     };
-    this.stateUpdator = this.stateUpdator.bind(this);
+    this.deleteFunc = this.deleteFunc.bind(this);
+    this.updateLike = this.updateLike.bind(this);
   }
 
-  stateUpdator(id) {
+  deleteFunc(id) {
     const newState = MovieService.deleteMovie(id);
     this.setState(newState);
-    
+  }
+
+  updateLike(id) {
+    const newState = this.state.movies.map((movie) => {
+      if (movie._id === id) {
+        const newMovie = { ...movie, like: !movie.like };
+        console.log(movie._id, id);
+        return newMovie;
+      }
+      return { ...movie };
+    });
+    this.setState({ movies: newState });
   }
 
   render() {
@@ -24,7 +36,11 @@ export default class App extends Component {
     return (
       <div className="App" id="App">
         <Header />
-        <Main movies={this.state.movies} deleteFunc={this.stateUpdator} />
+        <Main
+          movies={this.state.movies}
+          deleteFunc={this.deleteFunc}
+          updateLike={this.updateLike}
+        />
         <Footer />
       </div>
     );

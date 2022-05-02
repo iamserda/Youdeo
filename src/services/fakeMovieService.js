@@ -53,7 +53,7 @@ const movies = [
     _id: "5b21ca3eeb7f6fbccd47181e",
     title: "Gone Girl",
     genre: { _id: "5b21ca3eeb7f6fbccd471820", name: "Thriller" },
-    like: false,
+    like: true,
     numberInStock: 7,
     dailyRentalRate: 4.5,
   },
@@ -89,6 +89,7 @@ export function saveMovie(movie) {
   movieInDb.genre = genresAPI.genres.find((g) => g._id === movie.genreId);
   movieInDb.numberInStock = movie.numberInStock;
   movieInDb.dailyRentalRate = movie.dailyRentalRate;
+  movieInDb.like = movie.like;
 
   if (!movieInDb._id) {
     movieInDb._id = Date.now();
