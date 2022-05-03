@@ -12,30 +12,26 @@ function Table(props) {
 
   return (
     <table
-      className="table"
+      className="table col-10"
       style={!movies.length ? { display: "none" } : { display: "" }}
     >
       <thead className="thead-dark">
         <tr>
           <th scope="col">#</th>
-          <th scope="col" className="title">
+          <th scope="col" className="title th">
             Title
           </th>
-          <th scope="col" className="genre">
+          <th scope="col" className="genre th">
             Genre
           </th>
-          <th scope="col" className="stock">
+          <th scope="col" className="">
             Stock
           </th>
-          <th scope="col" className="rate">
-            Rate
+          <th scope="col" className="">
+            Rates
           </th>
-          <th scope="col" className="#">
-            Like
-          </th>
-          <th scope="col" className="#">
-            Action
-          </th>
+          <th scope="col" className=""></th>
+          <th scope="col" className=""></th>
         </tr>
       </thead>
       <tbody>{movieRows}</tbody>

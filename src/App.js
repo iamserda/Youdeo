@@ -15,8 +15,8 @@ export default class App extends Component {
   }
 
   deleteFunc(id) {
-    const newState = MovieService.deleteMovie(id);
-    this.setState(newState);
+    MovieService.deleteMovie(id);
+    this.setState({ movies: MovieService.getMovies() });
   }
 
   updateLike(id) {

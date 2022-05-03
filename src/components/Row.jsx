@@ -24,7 +24,7 @@ function Row(props) {
         {stock}
       </td>
       <td className=" font-weight-bold" style={{ fontSize: "1.125rem" }}>
-        ${rate + 9.49}
+        ${rate + 0.49}
       </td>
       <td>
         <span
@@ -39,9 +39,7 @@ function Row(props) {
       <td>
         <button
           className="btn btn-md btn-danger font-weight-bold"
-          onClick={() => {
-            deleteFunc(movie._id);
-          }}
+          onClick={() => deleteFunc(movie._id)}
         >
           remove
         </button>

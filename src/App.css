@@ -51,7 +51,8 @@
   min-height: vmin;
   max-height: vmax;
 }
-.title {
+.title,
+.th {
   text-align: left;
 }
 footer.Footer p {
