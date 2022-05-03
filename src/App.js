@@ -15,8 +15,11 @@ export default class App extends Component {
   }
 
   deleteFunc(id) {
-    MovieService.deleteMovie(id);
-    this.setState({ movies: MovieService.getMovies() });
+    const newState = { ...this.state };
+    let movieInDb = newState.movies.find((m) => m._id === id);
+    newState.movies.splice(newState.movies.indexOf(movieInDb), 1);
+    this.setState(newState);
+    return movieInDb;
   }
 
   updateLike(id) {
