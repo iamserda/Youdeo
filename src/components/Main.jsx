@@ -4,7 +4,9 @@ import PaginationComponent from "./PaginationComponent";
 import GenreFilterComponent from "./GenreFilterComponent";
 
 export default function Main(props) {
-  // console.log(props);
+  // console.log(props);?
+  const { updateGenres, updateFilter, genres } = props;
+  const { movies, deleteFunc, updateLike } = props;
   return (
     <main className="container main" role="main">
       <h3>
@@ -12,10 +14,10 @@ export default function Main(props) {
         moment.
       </h3>
       <div className="row">
-        <GenreFilterComponent />
-        <Table {...props} />
+        <GenreFilterComponent {...{ updateFilter, updateGenres, genres }} />
+        <Table {...{ movies, deleteFunc, updateLike }} />
       </div>
-      <PaginationComponent />
+      <PaginationComponent {...props} />
     </main>
   );
 }
