@@ -17,7 +17,7 @@ export default function Main(props) {
         <GenreFilterComponent {...{ updateFilter, updateGenres, genres }} />
         <Table {...{ movies, deleteFunc, updateLike }} />
       </div>
-      <PaginationComponent {...props} />
+      <PaginationComponent movies={movies} />
     </main>
   );
 }
