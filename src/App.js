@@ -3,21 +3,32 @@ import "./App.css";
 
 import { Header, Main, Footer } from "./components";
 import * as MovieService from "./services/fakeMovieService";
-import { getGenres, updateGenre } from "./services/fakeGenreService";
+import { getGenres } from "./services/fakeGenreService";
 
 export default class App extends Component {
+  // For any class, this is a function that's executed to initialize each instance of the class.
+  // In React.js, this is also a Lifecylce hook, during the "Mount" phase.
   constructor(props) {
     super(props);
     this.state = {
-      movies: MovieService.getMovies(),
+      movies: [],
+      currentView: [],
       genres: getGenres(),
     };
     this.deleteFunc = this.deleteFunc.bind(this);
     this.updateLike = this.updateLike.bind(this);
     this.filterGenre = this.filterGenre.bind(this);
-    this.updateGenres = this.updateGenres.bind(this);
+    console.log("App - Constructor()");
   }
 
+  // componentDidMount is a lifecycle hook that is executed during the component "Mounting or Mount" Phase.
+  componentDidMount() {
+    console.log("App - ComponentDidMount()");
+    this.setState((oldState) => {
+      const newState = { ...oldState, movies: MovieService.getMovies() };
+      return newState;
+    });
+  }
   deleteFunc(id) {
     const newState = { ...this.state };
     let movieInDb = newState.movies.find((m) => m._id === id);
@@ -38,36 +49,24 @@ export default class App extends Component {
     });
     this.setState({ movies: newState });
   }
-  updateGenres() {
-    const newState = { ...this.state };
-    const genreMonitoringObj = {};
-    newState.genres = (() => {
-      newState.movies.forEach((movie) => {
-        if (!genreMonitoringObj[movie.genre.id]) {
-          genreMonitoringObj[movie.genre.id] = movie.genre.name;
-          newState.genres.push(movie.genre);
-        }
-      });
-      return Object.entries(genreMonitoringObj);
-    })();
-    this.setState(newState);
-  }
+
   filterGenre(option) {
     const newState = { movies: MovieService.getMovies() };
     if (option) {
       const filteredState = newState.movies.filter(
         (movie) => movie.genre.name === option
       );
-      console.log(filteredState.length);
+      // console.log(filteredState.length);
       this.setState({ movies: filteredState });
       return;
     }
     this.setState({ movies: MovieService.getMovies() });
     return;
   }
-  
+
   render() {
     // console.log(this.state.movies);
+    console.log("App - Render()");
     return (
       <div className="App" id="App">
         <Header />
