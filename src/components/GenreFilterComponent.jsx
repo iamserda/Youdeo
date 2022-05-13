@@ -1,8 +1,8 @@
-import React, { Component, useState } from "react";
+import React from "react";
 
 function GenreFilterComponent(props) {
-  const { updateFilter, updateGenre } = props;
-  const genres = props.genres.map((genre, index) => {
+  const { filterGenres } = props;
+  const genresArray = props.genres.map((genre, index) => {
     return (
       <a
         key={genre.name + index}
@@ -13,8 +13,7 @@ function GenreFilterComponent(props) {
         role="tab"
         aria-controls="profile"
         onClick={() => {
-          updateFilter(genre.name);
-          updateGenre();
+          filterGenres(genre.name);
         }}
       >
         {genre.name}
@@ -32,11 +31,11 @@ function GenreFilterComponent(props) {
           href="#list-home"
           role="tab"
           aria-controls="home"
-          onClick={() => updateFilter("")}
+          onClick={() => filterGenres("")}
         >
           All
         </a>
-        {genres}
+        {genresArray}
       </div>
     </div>
   );

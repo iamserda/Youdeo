@@ -12,71 +12,93 @@ export default class App extends Component {
     super(props);
     this.state = {
       movies: [],
-      currentView: [],
-      genres: getGenres(),
+      lastFilter: "",
+      filteredView: [],
+      genres: [],
     };
     this.deleteFunc = this.deleteFunc.bind(this);
     this.updateLike = this.updateLike.bind(this);
-    this.filterGenre = this.filterGenre.bind(this);
-    console.log("App - Constructor()");
   }
 
   // componentDidMount is a lifecycle hook that is executed during the component "Mounting or Mount" Phase.
   componentDidMount() {
-    console.log("App - ComponentDidMount()");
+    // console.log("App - ComponentDidMount()");
     this.setState((oldState) => {
-      const newState = { ...oldState, movies: MovieService.getMovies() };
+      const newState = {
+        ...oldState,
+        movies: MovieService.getMovies(),
+        genres: getGenres(),
+      };
       return newState;
     });
+    this.filterGenres(this.lastFilter);
   }
+
+  // function deletes an item from the state.
   deleteFunc(id) {
     const newState = { ...this.state };
-    let movieInDb = newState.movies.find((m) => m._id === id);
-    newState.movies.splice(newState.movies.indexOf(movieInDb), 1);
-    newState.genres = getGenres();
+    // returns a movie that matches the id provided.
+    const movieInDb = newState.movies.find((m) => m._id === id);
+    const movieIndexInState = newState.movies.indexOf(movieInDb);
+    const deletedMovieArr = newState.movies.splice(movieIndexInState, 1);
     this.setState(newState);
-    return movieInDb;
+    // using this built-in method to update this.state.filteredView
+    // in order to update the current view on the browser.
+    this.filterGenres(this.state.lastFilter);
   }
 
+  // handling Like "click" events.
   updateLike(id) {
-    const newState = this.state.movies.map((movie) => {
-      if (movie._id === id) {
-        const newMovie = { ...movie, like: !movie.like };
-        console.log(movie._id, id);
-        return newMovie;
-      }
-      return { ...movie };
+    const { movies, lastFilter } = this.state;
+    const newMovies = movies.map(function (movie) {
+      if (movie._id === id) return { ...movie, like: !movie.like };
+      return movie;
     });
-    this.setState({ movies: newState });
+
+    //SOLUTION 1: Updating the view in the browser.
+    // const newFilteredView = filteredView.map(function (movie) {
+    //   if (movie._id === id) return { ...movie, like: !movie.like };
+    //   return movie;
+    // });
+    this.setState({
+      ...this.state,
+      movies: newMovies,
+    });
+
+    // using this built-in method to update this.state.filteredView
+    // in order to update the current view on the browser.
+    this.filterGenres(this.state.lastFilter);
   }
 
-  filterGenre(option) {
-    const newState = { movies: MovieService.getMovies() };
-    if (option) {
-      const filteredState = newState.movies.filter(
+  filterGenres = (option) => {
+    this.setState((oldState) => {
+      if (!option)
+        return {
+          ...oldState,
+          filteredView: [...oldState.movies],
+          lastFilter: option,
+        };
+      const filteredMoviesArr = oldState.movies.filter(
         (movie) => movie.genre.name === option
       );
-      // console.log(filteredState.length);
-      this.setState({ movies: filteredState });
-      return;
-    }
-    this.setState({ movies: MovieService.getMovies() });
-    return;
-  }
+      return {
+        ...oldState,
+        filteredView: filteredMoviesArr,
+        lastFilter: option,
+      };
+    });
+  };
 
   render() {
-    // console.log(this.state.movies);
-    console.log("App - Render()");
     return (
       <div className="App" id="App">
         <Header />
         <Main
-          movies={this.state.movies}
+          movies={this.state.filteredView}
           genres={this.state.genres}
           deleteFunc={this.deleteFunc}
           updateLike={this.updateLike}
-          updateFilter={this.filterGenre}
-          updateGenres={this.updateGenres}
+          filterGenres={this.filterGenres}
         />
         <Footer />
       </div>
