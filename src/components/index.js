@@ -1,5 +1,5 @@
-import Header from "./Header";
-import Main from "./Main";
-import Footer from "./Footer";
+import Header from "./uicomponents/Header";
+import Main from "./uicomponents/Main";
+import Footer from "./uicomponents/Footer";
 
 export { Footer, Header, Main };

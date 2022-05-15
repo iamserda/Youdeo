@@ -1,22 +1,23 @@
 import React from "react";
 
 function GenreFilterComponent(props) {
+  // console.log("props.genres:", props.genres);
   const { filterGenres } = props;
   const genresArray = props.genres.map((genre, index) => {
     return (
       <a
-        key={genre.name + index}
-        className="list-group-item list-group-item-action  overflow-hidden"
+        key={genre.name + "" + index}
+        className={"list-group-item list-group-item-action  overflow-hidden"}
         id="list-profile-list"
         data-toggle="list"
         href="#list-profile"
         role="tab"
         aria-controls="profile"
-        onClick={() => {
-          filterGenres(genre.name);
+        onClick={(e) => {
+          filterGenres(genre);
         }}
       >
-        {genre.name}
+        {genre}
       </a>
     );
   });

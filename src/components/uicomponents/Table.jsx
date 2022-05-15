@@ -3,7 +3,7 @@ import Row from "./Row";
 
 function Table(props) {
   const { movies, deleteFunc, updateLike } = props;
-  // console.log(props);
+
   const movieRows = movies.map((movie, index) => {
     return (
       <Row key={"row-" + index} {...{ movie, deleteFunc, updateLike, index }} />

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Table from "./Table";
-import PaginationComponent from "./PaginationComponent";
-import GenreFilterComponent from "./GenreFilterComponent";
+import PaginationComponent from "../common/PaginationComponent";
+import GenreFilterComponent from "../common/GenreFilterComponent";
 
 export default function Main(props) {
   const { movies, genres, deleteFunc, updateLike, filterGenres } = props;
@@ -11,13 +11,20 @@ export default function Main(props) {
       <h3>
         There are {props.movies.length || "no"} movie(s) available at the
         moment.
+        <br />
+        {props.movies.length
+          ? null
+          : "We are always improving, please check back later."}
       </h3>
 
       <div className="row">
         <GenreFilterComponent {...{ genres, filterGenres }} />
         <Table {...{ movies, deleteFunc, updateLike }} />
       </div>
-      <PaginationComponent movies={movies} />
+      <PaginationComponent
+        paginationArr={props.paginationArr}
+        handleChange={props.handlePages}
+      />
     </main>
   );
 }
