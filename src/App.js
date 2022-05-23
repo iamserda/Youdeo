@@ -13,10 +13,11 @@ export default class App extends Component {
       filteredView: [],
       showingNow: [],
       genres: [],
-      pageSize: 4,
+      pageSize: 6,
       paginationArr: [],
       lastFilter: null,
       currentPage: 1,
+      currentFilter: null,
     };
     console.log("Mount Phase: - constructor()");
   }
@@ -59,21 +60,17 @@ export default class App extends Component {
 
   // function deletes an item from the state.
   deleteFunc = (id) => {
-    let deletedMovieArr;
-
     this.setState((oldState) => {
       // returns a movie that matches the id provided.
       const movieInDb = oldState.movies.find((m) => m._id === id);
       const movieIndexInState = oldState.movies.indexOf(movieInDb);
-      deletedMovieArr = oldState.movies.splice(movieIndexInState, 1);
-      return { ...oldState };
+      oldState.movies.splice(movieIndexInState, 1);
+
+      const newMovies = oldState.movies.map((item) => {
+        return { ...item };
+      });
+      return { ...oldState, movies: newMovies };
     });
-    // using this built-in method to update this.state.filteredView
-    // in order to update the current view on the browser.
-    // this.filterGenres(this.state.lastFilter);
-    // this.updatePaginationArr();
-    // this.handlePages(this.state.currentPage || 1);
-    return deletedMovieArr[0];
   };
 
   // handling Like "click" events.
@@ -169,10 +166,7 @@ export default class App extends Component {
       <div className="App" id="App">
         <Header />
         <Main
-          movies={this.state.showingNow}
-          genres={this.state.genres}
-          currentPage={this.state.currentPage}
-          paginationArr={this.state.paginationArr}
+          {...this.state}
           deleteFunc={this.deleteFunc}
           updateLike={this.updateLike}
           filterGenres={this.filterGenres}

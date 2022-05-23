@@ -4,16 +4,10 @@ import PaginationComponent from "../common/PaginationComponent";
 import GenreFilterComponent from "../common/GenreFilterComponent";
 
 export default function Main(props) {
-  const {
-    movies,
-    genres,
-    deleteFunc,
-    updateLike,
-    filterGenres,
-    paginationArr,
-    handlePages,
-    currentPage,
-  } = props;
+  //props
+  const { movies, showingNow, genres, currentPage, paginationArr } = props;
+  // methods
+  const { deleteFunc, updateLike, filterGenres, handlePages } = props;
 
   return (
     <main className="container main" role="main">

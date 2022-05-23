@@ -28,9 +28,11 @@ export default function PaginationComponent(props) {
             </li>
           );
         });
-  return (
-    <nav aria-label="Page navigation example">
-      <ul className="pagination">{pagesArr}</ul>
-    </nav>
-  );
+  if (!pagesArr) return null;
+  else
+    return (
+      <nav aria-label="Page navigation example">
+        <ul className="pagination">{pagesArr}</ul>
+      </nav>
+    );
 }
