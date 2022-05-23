@@ -1,10 +1,8 @@
 import React from "react";
 
 function GenreFilterComponent(props) {
-  // console.log("props.genres:", props.genres);
   const { filterGenres } = props;
   const genresArray = props.genres.map((genre, index) => {
-    console.log(genre);
     return (
       <a
         key={genre + index}

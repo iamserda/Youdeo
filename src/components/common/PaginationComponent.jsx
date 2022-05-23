@@ -1,18 +1,26 @@
 import React from "react";
 
 export default function PaginationComponent(props) {
-  const paginationArr =
-    props.paginationArr.length === 0
-      ? []
-      : props.paginationArr.map((item, index) => {
+  const { currentPage, paginationArr, handlePages } = props;
+
+  const pagesArr =
+    paginationArr.length < 2
+      ? null
+      : paginationArr.map((item, index) => {
           item = index + 1;
           return (
-            <li key={"page-item" + item + index} className="page-item">
+            <li
+              key={"page-item" + item + index}
+              className={
+                item === currentPage ? "page-item active" : "page-item"
+              }
+            >
               <a
                 className="page-link"
                 href="/"
                 onClick={(e) => {
                   e.preventDefault();
+                  handlePages(item);
                 }}
               >
                 {item}
@@ -22,9 +30,7 @@ export default function PaginationComponent(props) {
         });
   return (
     <nav aria-label="Page navigation example">
-      <ul className="pagination">
-        {paginationArr.length === 0 ? null : paginationArr}
-      </ul>
+      <ul className="pagination">{pagesArr}</ul>
     </nav>
   );
 }

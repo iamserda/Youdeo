@@ -13,7 +13,11 @@ function Table(props) {
   return (
     <table
       className="table col-10"
-      style={!movies.length ? { display: "none" } : { display: "" }}
+      style={
+        !movies.length
+          ? { display: "none" }
+          : { display: "", minHeight: "400px" }
+      }
     >
       <thead className="thead-dark">
         <tr>
@@ -34,7 +38,7 @@ function Table(props) {
           <th scope="col" className=""></th>
         </tr>
       </thead>
-      <tbody>{movieRows}</tbody>
+      <tbody className="container">{movieRows}</tbody>
     </table>
   );
 }
