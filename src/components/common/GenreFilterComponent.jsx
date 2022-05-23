@@ -6,7 +6,7 @@ function GenreFilterComponent(props) {
     return (
       <a
         key={genre + index}
-        className={"list-group-item list-group-item-action  overflow-hidden"}
+        className="list-group-item list-group-item-action overflow-hidden"
         id="list-profile-list"
         data-toggle="list"
         href="#list-profile"
@@ -14,6 +14,8 @@ function GenreFilterComponent(props) {
         aria-controls="profile"
         onClick={(e) => {
           filterGenres(genre);
+          e.target.className =
+            "list-group-item list-group-item-action overflow-hidden active";
         }}
       >
         {genre}
@@ -25,7 +27,9 @@ function GenreFilterComponent(props) {
     <div className="col-2">
       <div className="list-group" id="list-tab" role="tablist">
         <a
-          className="list-group-item list-group-item-action overflow-hidden active"
+          className={
+            "list-group-item list-group-item-action overflow-hidden active"
+          }
           id="list-home-list"
           data-toggle="list"
           href="#list-home"

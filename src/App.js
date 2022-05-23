@@ -10,10 +10,10 @@ export default class App extends Component {
     super(props);
     this.state = {
       movies: [],
+      filteredView: [],
       showingNow: [],
       genres: [],
       pageSize: 4,
-      filteredView: [],
       paginationArr: [],
       lastFilter: null,
       currentPage: 1,
@@ -27,6 +27,11 @@ export default class App extends Component {
     this.setState((oldState) => {
       const moviesApiData = MovieService.getMovies();
       const genresFromMovies = this.getGenres(moviesApiData);
+      const newPaginationArr = [];
+      const numOfPages = Math.ceil(moviesApiData.length / oldState.pageSize);
+      for (let pageNum = 1; pageNum <= numOfPages; pageNum++) {
+        newPaginationArr.push(pageNum);
+      }
       return {
         ...oldState,
         movies: moviesApiData,
@@ -36,6 +41,7 @@ export default class App extends Component {
           oldState.pageSize,
           oldState.currentPage
         ),
+        paginationArr: newPaginationArr,
       };
     });
   }
@@ -113,9 +119,10 @@ export default class App extends Component {
         currentPage: 1,
       };
     });
-    this.updatePaginationArr();
-    // this.handlePages(this.state.currentPage);
+    this.updatePaginationState();
+    this.updatePages(1);
   };
+
   handlePages = (moviesArr, pageSize, pageNum) => {
     const first = (pageNum - 1) * pageSize;
     const last = first + pageSize;
@@ -124,15 +131,19 @@ export default class App extends Component {
     return moviesToShow;
   };
 
-  updatePage = (pageNum) => {
+  updatePages = (pageNum) => {
     this.setState((oldState) => {
       const { pageSize, filteredView } = oldState;
-      const moviesToShow = this.handlePages(filteredView, pageSize, pageNum);
-      return { ...oldState, showingNow: moviesToShow, currentPage: pageNum };
+      const showingNow = this.handlePages(
+        filteredView.length ? filteredView : oldState.movies,
+        pageSize,
+        pageNum
+      );
+      return { ...oldState, showingNow, currentPage: pageNum };
     });
   };
   // method updates the pagination array, which is used to calculate the number of nav-options to show at the bottom of each page once rendered.
-  updatePaginationArr = () => {
+  updatePaginationState = () => {
     this.setState((oldState) => {
       const newState = { ...oldState };
       const { filteredView, pageSize } = newState;
@@ -142,15 +153,13 @@ export default class App extends Component {
         localPaginationArr.push(pageNum);
       }
       newState.paginationArr = [...localPaginationArr];
-
       return newState;
     });
-    // this.handlePages(this.state.currentPage || 1);
   };
 
   render() {
     // const { movies, filteredView, showingNow } = this.state;
-    // console.log("Mount Phase - render()");
+    console.log("Mount Phase - render()");
     // console.log("Movies: ", movies.length);
     // console.log("FilteredView: ", filteredView.length);
     // console.log("ShowingNow: ", showingNow.length);
@@ -167,7 +176,7 @@ export default class App extends Component {
           deleteFunc={this.deleteFunc}
           updateLike={this.updateLike}
           filterGenres={this.filterGenres}
-          handlePages={this.updatePage}
+          handlePages={this.updatePages}
         />
         <Footer />
       </div>
