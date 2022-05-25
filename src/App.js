@@ -13,11 +13,10 @@ export default class App extends Component {
       filteredView: [],
       showingNow: [],
       genres: [],
-      pageSize: 6,
+      pageSize: 3,
       paginationArr: [],
       lastFilter: null,
       currentPage: 1,
-      currentFilter: null,
     };
     console.log("Mount Phase: - constructor()");
   }
@@ -92,6 +91,7 @@ export default class App extends Component {
   };
 
   filterGenres = (option) => {
+    console.log(option);
     this.setState((oldState) => {
       // when option is falsy.
       const { movies, pageSize } = oldState;

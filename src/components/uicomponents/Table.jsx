@@ -2,7 +2,7 @@ import React from "react";
 import Row from "./Row";
 
 function Table(props) {
-  const { movies, deleteFunc, updateLike } = props;
+  const { showingNow: movies, deleteFunc, updateLike } = props;
 
   const movieRows = movies.map((movie, index) => {
     return (
