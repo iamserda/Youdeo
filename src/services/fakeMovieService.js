@@ -142,7 +142,7 @@ const movies = [
   {
     _id: "5b21ca3eeb7f6fbccd471818",
     title: "The Revengers",
-    genre: { _id: "5b21ca3eeb7f6fbccd471818", name: "Action" },
+    genre: { _id: "5b21ca3eeb7f6fbccd471840", name: "Def Jam" },
     like: false,
     numberInStock: 27,
     dailyRentalRate: 13.5,

@@ -12,7 +12,7 @@ export default function Main(props) {
   return (
     <main className="container main" role="main">
       <h3>
-        There are {props.movies.length || "no"} movie(s) available at the
+        There are {props.filteredView.length || "no"} movie(s) available at the
         moment.
         <br />
         {props.movies.length

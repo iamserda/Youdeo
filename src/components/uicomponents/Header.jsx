@@ -17,14 +17,14 @@ export default function Header(props) {
       <div className="collapse navbar-collapse">
         <ul>
           <li>
-            <a href="/">Home</a>
+            <a href="/">Library</a>
+          </li>
+          {/* <li>
+            <a href="/">Support</a>
           </li>
           <li>
-            <a href="/">Home</a>
-          </li>
-          <li>
-            <a href="/">Home</a>
-          </li>
+            <a href="/">About</a>
+          </li> */}
         </ul>
       </div>
     </nav>

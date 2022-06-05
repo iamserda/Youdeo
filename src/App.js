@@ -8,42 +8,53 @@ export default class App extends Component {
   // In React.js, this is also a Lifecylce hook, during the "Mount" phase.
   constructor(props) {
     super(props);
+    console.log("Mount Phase: - constructor()");
+
+    // initializing State
     this.state = {
       movies: [],
       filteredView: [],
       showingNow: [],
       genres: [],
-      pageSize: 3,
+      pageSize: 1,
       paginationArr: [],
       lastFilter: null,
       currentPage: 1,
     };
-    console.log("Mount Phase: - constructor()");
   }
 
   // componentDidMount is a lifecycle hook that is executed during the component "Mounting or Mount" Phase.
   componentDidMount() {
-    console.log("Mount Phase: - ComponentDidMount()");
+    console.log("Mount Phase: - componentDidMount()");
     this.setState((oldState) => {
-      const moviesApiData = MovieService.getMovies();
-      const genresFromMovies = this.getGenres(moviesApiData);
-      const newPaginationArr = [];
-      const numOfPages = Math.ceil(moviesApiData.length / oldState.pageSize);
-      for (let pageNum = 1; pageNum <= numOfPages; pageNum++) {
-        newPaginationArr.push(pageNum);
-      }
-      return {
+      // create a new state obj.
+      const newStateObj = {
         ...oldState,
-        movies: moviesApiData,
-        genres: genresFromMovies,
-        showingNow: this.handlePages(
-          moviesApiData,
-          oldState.pageSize,
-          oldState.currentPage
-        ),
-        paginationArr: newPaginationArr,
       };
+
+      const { pageSize, currentPage } = oldState;
+      // getting data from backend services
+      // and setting new State object
+      const moviesArr = MovieService.getMovies();
+      newStateObj.movies = moviesArr;
+      const genresArr = this.getGenres(moviesArr);
+      newStateObj.genres = genresArr;
+      const paginationArr = this.generatePaginationArr(moviesArr, pageSize);
+      newStateObj.paginationArr = paginationArr;
+      const showingNowArr = this.generateShowingNowArr(
+        moviesArr,
+        pageSize,
+        currentPage
+      );
+      newStateObj.showingNow = showingNowArr;
+
+      // overwriting previous state with newState object.
+      return newStateObj;
     });
+
+    // updating UI [temporary]
+    this.filterGenres(this.state.lastFilter);
+    return;
   }
 
   //generate genres from the current list.
@@ -53,32 +64,56 @@ export default class App extends Component {
     moviesArr.forEach((item) => {
       genresObj[item.genre.name] = null;
     });
-    const genresArr = Object.keys(genresObj);
+    const genresArr = Object.keys(genresObj); // creating an array from the genresObj
     return genresArr;
   };
 
   // function deletes an item from the state.
   deleteFunc = (id) => {
     this.setState((oldState) => {
-      // returns a movie that matches the id provided.
-      const movieInDb = oldState.movies.find((m) => m._id === id);
-      const movieIndexInState = oldState.movies.indexOf(movieInDb);
-      oldState.movies.splice(movieIndexInState, 1);
+      const { movies: oldStateMovies } = oldState;
+      // returns a movie(to be deleted) that matches the id provided.
+      const movie = oldStateMovies.find((m) => m._id === id);
+      const indexOfMovie = oldStateMovies.indexOf(movie); // locate the index of the movie to be deleted.
+      oldStateMovies.splice(indexOfMovie, 1); // deleted the movie from the copied Movie Arr.
 
-      const newMovies = oldState.movies.map((item) => {
+      // creating a new copy of the movies {may need to revisit this, seems wasteful.}
+      const movies = oldStateMovies.map((item) => {
         return { ...item };
       });
-      return { ...oldState, movies: newMovies };
+
+      // overwriting State with new movies array.
+      return {
+        ...oldState,
+        movies,
+      };
     });
+
+    // forcing updates to reflect item deleted on the View
+    this.filterGenres(this.state.lastFilter);
+    // this.updatePaginationState();
+    // Deciding which page the app should display.
+    // What happens when the last item, in the last page is deleted?
+    // App should move the user to the previous page.
+    const paginationArrLength = this.state.paginationArr.length;
+    const theCurrentPageNumber = this.state.currentPage;
+    console.log("this.state.paginationArr.length:", paginationArrLength);
+    console.log("this.state.currentPage:", this.state.currentPage);
+    console.log(this.state.showingNow);
+    if (theCurrentPageNumber > paginationArrLength) {
+      console.log("option 1");
+      this.updatePages(paginationArrLength);
+    } else {
+      console.log("option 2");
+      this.updatePages(theCurrentPageNumber);
+    }
   };
 
   // handling Like "click" events.
   updateLike = (id) => {
-    console.log(id);
-    let lastFilter = null;
+    // updating state to reflect new "likes", does NOT update the view...yet!
     this.setState((oldState) => {
-      const { movies } = oldState;
-      lastFilter = oldState.lastFilter;
+      const { movies, pageSize, pageNum } = oldState;
       const newMovies = movies.map(function (movie) {
         if (movie._id === id) return { ...movie, like: !movie.like };
         return movie;
@@ -86,41 +121,43 @@ export default class App extends Component {
       return { ...oldState, movies: newMovies };
     });
 
-    // update state
-    this.filterGenres(lastFilter);
+    // updates the view, and keeping the user in the same filter page, and the same page
+    this.filterGenres(this.state.lastFilter);
+    this.updatePages(this.state.currentPage);
+  };
+
+  // filtering based on genres.
+  handleFilter = (moviesArr, option) => {
+    if (!moviesArr.length) return [];
+
+    const filteredMoviesArr = moviesArr.filter(
+      (movie) => movie.genre.name === option
+    );
+
+    return filteredMoviesArr;
   };
 
   filterGenres = (option) => {
-    console.log(option);
     this.setState((oldState) => {
-      // when option is falsy.
-      const { movies, pageSize } = oldState;
       if (!option)
         return {
           ...oldState,
-          filteredView: [...movies],
-          showingNow: this.handlePages(movies, pageSize, 1),
+          filteredView: [...oldState.movies],
           lastFilter: option,
-          currentPage: 1,
         };
 
-      //when option is truthy.
-      const filteredMoviesArr = oldState.movies.filter(
-        (movie) => movie.genre.name === option
-      );
       return {
         ...oldState,
-        filteredView: filteredMoviesArr,
-        showingNow: this.handlePages(movies, pageSize, 1),
+        filteredView: this.handleFilter(oldState.movies, option),
         lastFilter: option,
-        currentPage: 1,
       };
     });
-    this.updatePaginationState();
     this.updatePages(1);
+    this.updatePaginationState();
   };
 
-  handlePages = (moviesArr, pageSize, pageNum) => {
+  // updates the array of movies to be displayed for the current page.
+  generateShowingNowArr = (moviesArr, pageSize, pageNum) => {
     const first = (pageNum - 1) * pageSize;
     const last = first + pageSize;
     const moviesToShow = moviesArr.slice(first, last);
@@ -128,10 +165,11 @@ export default class App extends Component {
     return moviesToShow;
   };
 
+  // this method overwrites the state, reflecting current-page, and updates the array of what content to display.
   updatePages = (pageNum) => {
     this.setState((oldState) => {
       const { pageSize, filteredView } = oldState;
-      const showingNow = this.handlePages(
+      const showingNow = this.generateShowingNowArr(
         filteredView.length ? filteredView : oldState.movies,
         pageSize,
         pageNum
@@ -139,29 +177,32 @@ export default class App extends Component {
       return { ...oldState, showingNow, currentPage: pageNum };
     });
   };
+
   // method updates the pagination array, which is used to calculate the number of nav-options to show at the bottom of each page once rendered.
   updatePaginationState = () => {
     this.setState((oldState) => {
       const newState = { ...oldState };
       const { filteredView, pageSize } = newState;
-      const numOfPages = Math.ceil(filteredView.length / pageSize);
-      const localPaginationArr = [];
-      for (let pageNum = 1; pageNum <= numOfPages; pageNum++) {
-        localPaginationArr.push(pageNum);
-      }
-      newState.paginationArr = [...localPaginationArr];
+      newState.paginationArr = this.generatePaginationArr(
+        filteredView,
+        pageSize
+      );
       return newState;
     });
+  };
+
+  generatePaginationArr = (movieArr, pageSize) => {
+    const PaginationArr = [];
+    const numOfPages = Math.ceil(movieArr.length / pageSize);
+    for (let pageNum = 1; pageNum <= numOfPages; pageNum++) {
+      PaginationArr.push(pageNum);
+    }
+    return PaginationArr;
   };
 
   render() {
     // const { movies, filteredView, showingNow } = this.state;
     console.log("Mount Phase - render()");
-    // console.log("Movies: ", movies.length);
-    // console.log("FilteredView: ", filteredView.length);
-    // console.log("ShowingNow: ", showingNow.length);
-    // this.filterGenres(this.lastFilter);
-
     return (
       <div className="App" id="App">
         <Header />
